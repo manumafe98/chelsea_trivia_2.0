@@ -27,6 +27,9 @@ public class PlayersdataApplication {
 			String playerPosition = row.selectFirst("td:nth-child(2) table tbody tr:nth-child(2) > td").text();
 			String playerAge = row.select("td:nth-child(3)").text();
 
+			Element portraitImgElement = row.selectFirst("table.inline-table img.bilderrahmen-fixed");
+			String playerImg = portraitImgElement != null ? portraitImgElement.attr("src") : "No image available";
+
 			Elements nationalityImgs = row.select("td:nth-child(4) img");
 			StringBuilder playerNationalities = new StringBuilder();
 			for (Element img : nationalityImgs) {
@@ -53,6 +56,7 @@ public class PlayersdataApplication {
 			int minutesPlayed = Integer.parseInt(row.select("td:nth-child(15)").text().replace("'", "").replace(".", ""));
 
 			System.out.println("shirt_number: " + playerShirtNumber);
+			System.out.println("img_url: " + playerImg);
 			System.out.println("name: " + playerName);
 			System.out.println("position: " + playerPosition);
 			System.out.println("age: " + playerAge);

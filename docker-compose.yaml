@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  my-mongodb:
+    image: mongo:4.4
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=playersData
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin

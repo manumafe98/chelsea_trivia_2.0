@@ -6,12 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.manumafe.players.data.playersdata.document.Player;
 import com.manumafe.players.data.playersdata.service.PlayerService;
 
 import lombok.RequiredArgsConstructor;
+
 
 @RestController
 @RequestMapping("/api/v1/player")
@@ -23,6 +25,18 @@ public class PlayerController {
     @GetMapping
     public ResponseEntity<List<Player>> getPlayers() {
         List<Player> players = playerService.findAllPlayers();
+        return ResponseEntity.status(HttpStatus.OK).body(players);
+    }
+
+    @GetMapping("/most")
+    public ResponseEntity<List<Player>> getPlayerWithMostOfThatAttributeAndTwoRandom(@RequestParam("attribute") String attribute) {
+        List<Player> players = playerService.findPlayerWithMostOfCertainAttribute(attribute);
+        return ResponseEntity.status(HttpStatus.OK).body(players);
+    }
+
+    @GetMapping("/random")
+    public ResponseEntity<List<Player>> getRandomPlayers() {
+        List<Player> players = playerService.findRandomPlayers();
         return ResponseEntity.status(HttpStatus.OK).body(players);
     }
 }

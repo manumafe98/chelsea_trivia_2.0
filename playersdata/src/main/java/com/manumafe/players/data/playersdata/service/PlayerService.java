@@ -9,4 +9,6 @@ public interface PlayerService {
     void savePlayer(Player player);
     void deleteAllPlayers();
     List<Player> findAllPlayers();
+    List<Player> findRandomPlayers();
+    List<Player> findPlayerWithMostOfCertainAttribute(String attribute);
 }

@@ -1,6 +1,7 @@
 package com.manumafe.players.data.playersdata.document;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -18,9 +19,9 @@ public class Player {
     @Id
     private String id;
     private String fullName;
-    private Integer shirtNumber;
+    private Set<String> shirtNumbers;
     private String profileImageUrl;
-    private String position;
+    private Set<String> positions;
     private Integer age;
     private List<String> nationalities;
     private Integer appareances;

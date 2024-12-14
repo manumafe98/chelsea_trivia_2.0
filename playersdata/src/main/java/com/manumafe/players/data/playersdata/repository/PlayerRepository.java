@@ -1,6 +1,7 @@
 package com.manumafe.players.data.playersdata.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -16,4 +17,7 @@ public interface PlayerRepository extends MongoRepository<Player, String> {
 
     @Aggregation(pipeline = { "{ $sample: { size: ?0 } }" })
     List<Player> findRandomPlayers(int sampleSize);
+
+    @Aggregation(pipeline = { "{ $match: { fullName: ?0 } }" })
+    Optional<Player> findByFullName(String fullName);
 }

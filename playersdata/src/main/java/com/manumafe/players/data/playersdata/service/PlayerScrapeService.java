@@ -6,6 +6,6 @@ import org.jsoup.nodes.Document;
 
 public interface PlayerScrapeService {
 
-    Document connect() throws IOException;
+    Document connect(String url) throws IOException;
     void scrapePlayers() throws IOException;
 }

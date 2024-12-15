@@ -1,8 +1,10 @@
 package com.manumafe.players.data.playersdata.enums;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Getter
 public enum ScrapeUrls {
     CHELSEA_SQUAD_1907("1907"),
     CHELSEA_SQUAD_1908("1908"),

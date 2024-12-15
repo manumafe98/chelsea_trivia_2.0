@@ -1,6 +1,7 @@
 package com.manumafe.players.data.playersdata.service.implementation;
 
 import java.io.IOException;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +11,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import com.manumafe.players.data.playersdata.document.Player;
@@ -31,67 +34,88 @@ public class PlayerScrapeServiceImpl implements PlayerScrapeService {
     }
 
     @Override
-    public void scrapePlayers() throws IOException {
-        // TODO Schedule only the current URL (2024) and only run 1 time all the others
+    @EventListener(ContextRefreshedEvent.class)
+    public void scrapeAllPlayers() throws IOException {
         playerService.deleteAllPlayers();
 
         for (ScrapeUrls url : ScrapeUrls.values()) {
-            Document doc = connect(url.getFullUrl());
-            Elements tableRows = doc.select("table tbody > tr");
+            scrapePlayers(url.getFullUrl());
+        }
+    }
 
-            for (Element row : tableRows) {
-                String playerName = row.select("td:nth-child(2) table tbody tr td span.hide-for-small > a").text();
+    @Override
+    public void scrapeCurrentYearPlayers() throws IOException {
+        String yearInString = String.valueOf(Year.now().getValue());
+        for (ScrapeUrls url : ScrapeUrls.values()) {
+            if (url.getYear().equals(yearInString)) {
+                scrapePlayers(url.getFullUrl());
+            }
+        }
+    }
 
-                if (row.text().contains("Not used during this season") || row.text().contains("Not in squad during this season") || playerName.isBlank()) {
-                    continue;
-                }
+    // TODO add helper function to reduce de duplication of .equals("-") and Integer.parseInt
+    private void scrapePlayers(String url) throws IOException {
+        Document doc = connect(url);
+        Elements tableRows = doc.select("table tbody > tr");
 
-                Set<String> playerShirtNumbers = new HashSet<>();
-                String playerShirData = row.select("td:nth-child(1) div").text();
-                playerShirtNumbers.add(playerShirData.equals("-") ? "Unknown" : playerShirData);
+        for (Element row : tableRows) {
+            String playerName = row.select("td:nth-child(2) table tbody tr td span.hide-for-small > a").text();
 
-                Set<String> playerPositions = new HashSet<>();
-                String playerPositionData = row.selectFirst("td:nth-child(2) table tbody tr:nth-child(2) > td").text();
-                playerPositions.add(playerPositionData);
+            if (row.text().contains("Not used during this season") || row.text().contains("Not in squad during this season") || playerName.isBlank()) {
+                continue;
+            }
 
-                String playerAgeData = row.select("td:nth-child(3)").text();
-                int playerAge = playerAgeData.equals("-") ? 0 : Integer.parseInt(playerAgeData);
+            // TODO Fix bug on shirtNumbers
+            // "fullName": "Mickey Thomas",
+            // "shirtNumbers": [
+            //     "Unknown",
+            //     "-"
+            // ],
+            Set<String> playerShirtNumbers = new HashSet<>();
+            String playerShirData = row.select("td:nth-child(1) div").text();
+            playerShirtNumbers.add(playerShirData.equals("-") ? "Unknown" : playerShirData);
 
-                Element portraitImgElement = row.selectFirst("table.inline-table img.bilderrahmen-fixed");
-                String playerImgUrl = portraitImgElement != null ? portraitImgElement.attr("src") : "No image available";
+            Set<String> playerPositions = new HashSet<>();
+            String playerPositionData = row.selectFirst("td:nth-child(2) table tbody tr:nth-child(2) > td").text();
+            playerPositions.add(playerPositionData);
 
-                Elements nationalityImgs = row.select("td:nth-child(4) img");
-                List<String> playerNationalities = new ArrayList<>();
+            String playerAgeData = row.select("td:nth-child(3)").text();
+            int playerAge = playerAgeData.equals("-") ? 0 : Integer.parseInt(playerAgeData);
 
-                for (Element img : nationalityImgs) {
-                    playerNationalities.add(img.attr("title"));
-                }
+            Element portraitImgElement = row.selectFirst("table.inline-table img.bilderrahmen-fixed");
+            String playerImgUrl = portraitImgElement != null ? portraitImgElement.attr("src") : "No image available";
 
-                String appareacesData = row.select("td:nth-child(6)").text();
-                int appareances = appareacesData.equals("-") ? 0 : Integer.parseInt(appareacesData);
+            Elements nationalityImgs = row.select("td:nth-child(4) img");
+            List<String> playerNationalities = new ArrayList<>();
 
-                String goalsData = row.select("td:nth-child(7)").text();
-                int goals = goalsData.equals("-") ? 0 : Integer.parseInt(goalsData);
+            for (Element img : nationalityImgs) {
+                playerNationalities.add(img.attr("title"));
+            }
 
-                String assistsData = row.select("td:nth-child(8)").text();
-                int assists = assistsData.equals("-") ? 0 : Integer.parseInt(assistsData);
+            String appareacesData = row.select("td:nth-child(6)").text();
+            int appareances = appareacesData.equals("-") ? 0 : Integer.parseInt(appareacesData);
 
-                String yellowCardsData = row.select("td:nth-child(9)").text();
-                int yellowCards = yellowCardsData.equals("-") ? 0 : Integer.parseInt(yellowCardsData);
+            String goalsData = row.select("td:nth-child(7)").text();
+            int goals = goalsData.equals("-") ? 0 : Integer.parseInt(goalsData);
 
-                String redCardsData = row.select("td:nth-child(11)").text();
-                int redCards = redCardsData.equals("-") ? 0 : Integer.parseInt(redCardsData);
+            String assistsData = row.select("td:nth-child(8)").text();
+            int assists = assistsData.equals("-") ? 0 : Integer.parseInt(assistsData);
 
-                String minutesPlayedData = row.select("td:nth-child(15)").text();
-                int minutesPlayed = minutesPlayedData.equals("-") ? 0 : Integer.parseInt(minutesPlayedData.replace("'", "").replace(".", ""));
+            String yellowCardsData = row.select("td:nth-child(9)").text();
+            int yellowCards = yellowCardsData.equals("-") ? 0 : Integer.parseInt(yellowCardsData);
 
-                Player player = playerService.findPlayerByName(playerName);
+            String redCardsData = row.select("td:nth-child(11)").text();
+            int redCards = redCardsData.equals("-") ? 0 : Integer.parseInt(redCardsData);
 
-                if (player != null) {
-                    playerService.updatePlayer(player, playerShirData, playerPositionData, playerAge, appareances, goals, assists, yellowCards, redCards, minutesPlayed);
-                } else {
-                    playerService.savePlayer(playerName, playerShirtNumbers, playerImgUrl, playerPositions, playerAge, playerNationalities, appareances, goals, assists, yellowCards, redCards, minutesPlayed);
-                }
+            String minutesPlayedData = row.select("td:nth-child(15)").text();
+            int minutesPlayed = minutesPlayedData.equals("-") ? 0 : Integer.parseInt(minutesPlayedData.replace("'", "").replace(".", ""));
+
+            Player player = playerService.findPlayerByName(playerName);
+
+            if (player != null) {
+                playerService.updatePlayer(player, playerShirData, playerPositionData, playerAge, appareances, goals, assists, yellowCards, redCards, minutesPlayed);
+            } else {
+                playerService.savePlayer(playerName, playerShirtNumbers, playerImgUrl, playerPositions, playerAge, playerNationalities, appareances, goals, assists, yellowCards, redCards, minutesPlayed);
             }
         }
     }

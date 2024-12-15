@@ -70,6 +70,7 @@ public class PlayerServiceImpl implements PlayerService {
 
 	@Override
 	public List<Player> findPlayerWithMostOfCertainAttribute(String attribute) {
+		// TODO what if two players have exaclty the same of that attribute, define by some other criteria
 		Query query = new Query().with(Sort.by(Sort.Order.desc(attribute)));
 		Player topScorerPlayer = mongoTemplate.findOne(query, Player.class);
 		List<Player> randomPlayers = playerRepository.findRandomPlayersExcludingId(topScorerPlayer.getId(), 2);

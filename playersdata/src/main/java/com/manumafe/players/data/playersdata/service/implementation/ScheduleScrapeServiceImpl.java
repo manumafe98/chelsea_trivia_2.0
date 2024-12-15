@@ -17,8 +17,8 @@ public class ScheduleScrapeServiceImpl implements ScheduleScrapeService {
     private final PlayerScrapeService playerScrapeService;
 
     @Override
-    @Scheduled(fixedRate = 12 * 60 * 60 * 1000)
+    @Scheduled(cron = "0 0 0 */3 * ?")
     public void scheduleScrape() throws IOException {
-        playerScrapeService.scrapePlayers();
+        playerScrapeService.scrapeCurrentYearPlayers();
     }
 }

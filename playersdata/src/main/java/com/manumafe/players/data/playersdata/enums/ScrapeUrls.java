@@ -1,10 +1,10 @@
 package com.manumafe.players.data.playersdata.enums;
 
-import lombok.Getter;
+import java.time.Year;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Getter
 public enum ScrapeUrls {
     CHELSEA_SQUAD_1907("1907"),
     CHELSEA_SQUAD_1908("1908"),
@@ -103,10 +103,14 @@ public enum ScrapeUrls {
     CHELSEA_SQUAD_2023("2023"),
     CHELSEA_SQUAD_2024("2024");
 
-    private final String baseUrl = "https://www.transfermarkt.com/chelsea-fc/leistungsdaten/verein/631/plus/1?reldata=%26";
+    private static final String baseUrl = "https://www.transfermarkt.com/chelsea-fc/leistungsdaten/verein/631/plus/1?reldata=%26";
     private final String year;
 
     public String getFullUrl() {
         return baseUrl + year;
+    }
+
+    public static String getCurrentYearFullUrl() {
+        return baseUrl + String.valueOf(Year.now().getValue());
     }
 }

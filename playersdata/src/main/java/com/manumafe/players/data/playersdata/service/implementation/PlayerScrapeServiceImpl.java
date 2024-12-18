@@ -30,7 +30,9 @@ public class PlayerScrapeServiceImpl implements PlayerScrapeService {
     private final PlayerService playerService;
     private static final String SHIRT_NUMBER = "shirtNumber";
     private static final String NATIONALITY = "nationality";
-    private static final String PLAYER_DATA = "playerData";
+    private static final String PLAYER_NAME = "playerName";
+    private static final String PLAYER_POSITION = "playerPosition";
+    private static final String PLAYER_PORTRAIT = "playerPortrait";
     private static final String AGE = "age";
     private static final String APPEARANCES = "appearances";
     private static final String GOALS = "goals";
@@ -59,12 +61,11 @@ public class PlayerScrapeServiceImpl implements PlayerScrapeService {
         scrapePlayers(ScrapeUrls.getCurrentYearFullUrl());
     }
 
-    // TODO update it to directly store the selector instead only the number of th
-    private Map<String, Integer> parseTableHeaders() throws IOException {
+    private Map<String, String> parsetableHeaderSelectorselectors() throws IOException {
         Document doc = connect(ScrapeUrls.getCurrentYearFullUrl());
         Elements headers = doc.select("thead tr th");
 
-        Map<String, Integer> columnMap = new HashMap<>();
+        Map<String, String> columnMap = new HashMap<>();
 
         for (int i = 0; i < headers.size(); i++) {
             Element th = headers.get(i);
@@ -74,92 +75,85 @@ public class PlayerScrapeServiceImpl implements PlayerScrapeService {
         return columnMap;
     }
 
-    private void addColumnMapping(Element th, int index, Map<String, Integer> columnMap) {
+    private void addColumnMapping(Element th, int index, Map<String, String> columnMap) {
         String spanTitle = th.select("a > span").attr("title");
         String text = th.text().trim();
+        int currentIndex = index + 1;
 
         if (text.contains("#")) {
-            columnMap.put(SHIRT_NUMBER, index + 1);
+            columnMap.put(SHIRT_NUMBER, "td:nth-child(" + currentIndex + ") div");
         } else if (text.contains("Nat.")) {
-            columnMap.put(NATIONALITY, index + 1);
+            columnMap.put(NATIONALITY, "td:nth-child(" + currentIndex + ") img");
         } else if (text.contains("Player")) {
-            columnMap.put(PLAYER_DATA, index + 1);
+            columnMap.put(PLAYER_NAME, "td:nth-child(" + currentIndex + ") table tbody tr td span.hide-for-small > a");
+            columnMap.put(PLAYER_POSITION, "td:nth-child(" + currentIndex + ") table tbody tr:nth-child(2) > td");
         } else if (text.contains("Age")) {
-            columnMap.put(AGE, index + 1);
+            columnMap.put(AGE, "td:nth-child(" + currentIndex  + ")");
         }
 
         switch (spanTitle) {
-            case "Appearances" -> columnMap.put(APPEARANCES, index + 1);
-            case "Goals" -> columnMap.put(GOALS, index + 1);
-            case "Assists" -> columnMap.put(ASSISTS, index + 1);
-            case "Yellow cards" -> columnMap.put(YELLOW_CARDS, index + 1);
-            case "Red cards" -> columnMap.put(RED_CARDS, index + 1);
-            case "Minutes played" -> columnMap.put(MINUTES_PLAYED, index + 1);
+            case "Appearances" -> columnMap.put(APPEARANCES, "td:nth-child(" + currentIndex + ")");
+            case "Goals" -> columnMap.put(GOALS, "td:nth-child(" + currentIndex + ")");
+            case "Assists" -> columnMap.put(ASSISTS, "td:nth-child(" + currentIndex + ")");
+            case "Yellow cards" -> columnMap.put(YELLOW_CARDS, "td:nth-child(" + currentIndex + ")");
+            case "Red cards" -> columnMap.put(RED_CARDS, "td:nth-child(" + currentIndex + ")");
+            case "Minutes played" -> columnMap.put(MINUTES_PLAYED, "td:nth-child(" + currentIndex + ")");
         }
+
+        columnMap.put(PLAYER_PORTRAIT, "table.inline-table img.bilderrahmen-fixed");
     }
 
     private void scrapePlayers(String url) throws IOException {
-        Map<String, Integer> tableHeaders = parseTableHeaders();
+        Map<String, String> tableHeaderSelectors = parsetableHeaderSelectorselectors();
 
         Document doc = connect(url);
         Elements tableRows = doc.select("table tbody > tr");
 
         for (Element row : tableRows) {
-            String playerNameSelector = "td:nth-child(" + tableHeaders.get(PLAYER_DATA) + ") table tbody tr td span.hide-for-small > a";
-            String playerName = row.select(playerNameSelector).text();
+            String playerName = row.select(tableHeaderSelectors.get(PLAYER_NAME)).text();
 
             if (row.text().contains("Not used during this season") || row.text().contains("Not in squad during this season") || playerName.isBlank()) {
                 continue;
             }
 
             Set<String> playerShirtNumbers = new HashSet<>();
-            String playerShirtSelector = "td:nth-child(" + tableHeaders.get(SHIRT_NUMBER) + ") div";
-            String playerShirtString = row.select(playerShirtSelector).text();
+            String playerShirtString = row.select(tableHeaderSelectors.get(SHIRT_NUMBER)).text();
             String playerShirtData = playerShirtString.equals("-") ? "Unknown" : playerShirtString;
             playerShirtNumbers.add(playerShirtData);
 
             Set<String> playerPositions = new HashSet<>();
-            String playerPositionSelector = "td:nth-child(" + tableHeaders.get(PLAYER_DATA) + ") table tbody tr:nth-child(2) > td";
-            String playerPositionData = row.selectFirst(playerPositionSelector).text();
+            String playerPositionData = row.selectFirst(tableHeaderSelectors.get(PLAYER_POSITION)).text();
             playerPositions.add(playerPositionData);
 
-            String playerAgeSelector = "td:nth-child(" + tableHeaders.get(AGE)  + ")";
-            String playerAgeData = row.select(playerAgeSelector).text();
+            String playerAgeData = row.select(tableHeaderSelectors.get(AGE)).text();
             int playerAge = convertStatToInteger(playerAgeData);
 
-            Element portraitImgElement = row.selectFirst("table.inline-table img.bilderrahmen-fixed");
+            Element portraitImgElement = row.selectFirst(tableHeaderSelectors.get(PLAYER_PORTRAIT));
             String playerImgUrl = portraitImgElement != null ? portraitImgElement.attr("src") : "No image available";
 
-            String playerNationalitySelector = "td:nth-child(" + tableHeaders.get(NATIONALITY) + ") img";
-            Elements nationalities = row.select(playerNationalitySelector);
+            Elements nationalities = row.select(tableHeaderSelectors.get(NATIONALITY));
             List<String> playerNationalities = new ArrayList<>();
 
             for (Element nationality : nationalities) {
                 playerNationalities.add(nationality.attr("title"));
             }
 
-            String appareacesSelector = "td:nth-child(" + tableHeaders.get(APPEARANCES) + ")";
-            String appareacesData = row.select(appareacesSelector).text();
+            String appareacesData = row.select(tableHeaderSelectors.get(APPEARANCES)).text();
             int appareances = convertStatToInteger(appareacesData);
 
-            String goalsSelector = "td:nth-child(" + tableHeaders.get(GOALS) + ")";
-            String goalsData = row.select(goalsSelector).text();
+            String goalsData = row.select(tableHeaderSelectors.get(GOALS)).text();
             int goals = convertStatToInteger(goalsData);
 
-            String assistsSelector = "td:nth-child(" + tableHeaders.get(ASSISTS) + ")";
-            String assistsData = row.select(assistsSelector).text();
+            String assistsData = row.select(tableHeaderSelectors.get(ASSISTS)).text();
             int assists = convertStatToInteger(assistsData);
 
-            String yellowCardsSelector = "td:nth-child(" + tableHeaders.get(YELLOW_CARDS) + ")";
-            String yellowCardsData = row.select(yellowCardsSelector).text();
+            String yellowCardsData = row.select(tableHeaderSelectors.get(YELLOW_CARDS)).text();
             int yellowCards = convertStatToInteger(yellowCardsData);
 
-            String redCardsSelector = "td:nth-child(" + tableHeaders.get(RED_CARDS) + ")";
-            String redCardsData = row.select(redCardsSelector).text();
+            String redCardsData = row.select(tableHeaderSelectors.get(RED_CARDS)).text();
             int redCards = convertStatToInteger(redCardsData);
 
-            String minutesPlayedSelector = "td:nth-child(" + tableHeaders.get(MINUTES_PLAYED) + ")";
-            String minutesPlayedData = row.select(minutesPlayedSelector).text().replace("'", "").replace(".", "");
+            String minutesPlayedData = row.select(tableHeaderSelectors.get(MINUTES_PLAYED)).text().replace("'", "").replace(".", "");
             int minutesPlayed = convertStatToInteger(minutesPlayedData);
 
             Player player = playerService.findPlayerByName(playerName);

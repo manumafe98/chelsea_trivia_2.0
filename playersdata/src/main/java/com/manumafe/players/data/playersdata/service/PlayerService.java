@@ -5,10 +5,9 @@ import java.util.List;
 import com.manumafe.players.data.playersdata.document.Player;
 
 public interface PlayerService {
-// TODO add services to get 3 random players for age without age 0 and for shirts without shirt unknown
     void savePlayer(
         String playerName,
-        String playerShirtNumbers,
+        Integer playerShirtNumbers,
         String playerImgUrl,
         String playerPositions,
         Integer playerAge,
@@ -22,7 +21,7 @@ public interface PlayerService {
 
     void updatePlayer(
         Player playerToUpdate,
-        String playerShirtNumber,
+        Integer playerShirtNumber,
         String playerPosition,
         Integer playerAge,
         Integer appareances,
@@ -39,6 +38,8 @@ public interface PlayerService {
     List<Player> findAllPlayers();
 
     List<Player> findRandomPlayers();
+
+    List<Player> findRandomPlayersWithFilters(String filter);
 
     List<Player> findPlayerWithMostOfCertainAttribute(String attribute);
 }

@@ -115,7 +115,7 @@ public class PlayerScrapeServiceImpl implements PlayerScrapeService {
             }
 
             String playerShirtString = row.select(tableHeaderSelectors.get(SHIRT_NUMBER)).text();
-            String playerShirtData = playerShirtString.equals("-") ? "Unknown" : playerShirtString;
+            int playerShirtData = convertStatToInteger(playerShirtString);
 
             String playerPositionData = row.selectFirst(tableHeaderSelectors.get(POSITION)).text();
 

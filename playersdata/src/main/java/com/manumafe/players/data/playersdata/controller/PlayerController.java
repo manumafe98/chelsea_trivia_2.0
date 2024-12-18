@@ -39,4 +39,10 @@ public class PlayerController {
         List<Player> players = playerService.findRandomPlayers();
         return ResponseEntity.status(HttpStatus.OK).body(players);
     }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<Player>> getRandomPlayersWithFilter(@RequestParam("attribute") String attribute) {
+        List<Player> players = playerService.findRandomPlayersWithFilters(attribute);
+        return ResponseEntity.status(HttpStatus.OK).body(players);
+    }
 }

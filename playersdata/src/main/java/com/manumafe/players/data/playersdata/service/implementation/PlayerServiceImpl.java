@@ -7,6 +7,11 @@ import java.util.Set;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.aggregation.SampleOperation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +31,7 @@ public class PlayerServiceImpl implements PlayerService {
 	@Override
 	public void savePlayer(
 			String playerName,
-			String playerShirtNumber,
+			Integer playerShirtNumber,
 			String playerImgUrl,
 			String playerPosition,
 			Integer playerAge,
@@ -40,7 +45,7 @@ public class PlayerServiceImpl implements PlayerService {
 		Player player = new Player();
 		player.setFullName(playerName);
 
-		Set<String> playerShirtNumbers = new HashSet<>();
+		Set<Integer> playerShirtNumbers = new HashSet<>();
 		playerShirtNumbers.add(playerShirtNumber);
 		player.setShirtNumbers(playerShirtNumbers);
 
@@ -93,7 +98,7 @@ public class PlayerServiceImpl implements PlayerService {
 	@Override
 	public void updatePlayer(
 			Player playerToUpdate,
-			String playerShirtNumber,
+			Integer playerShirtNumber,
 			String playerPosition,
 			Integer playerAge,
 			Integer appareances,
@@ -103,7 +108,7 @@ public class PlayerServiceImpl implements PlayerService {
 			Integer redCards,
 			Integer minutesPlayed) {
 
-		Set<String> shirtNumbers = new HashSet<>(playerToUpdate.getShirtNumbers());
+		Set<Integer> shirtNumbers = new HashSet<>(playerToUpdate.getShirtNumbers());
 		shirtNumbers.add(playerShirtNumber);
 		playerToUpdate.setShirtNumbers(shirtNumbers);
 
@@ -128,5 +133,18 @@ public class PlayerServiceImpl implements PlayerService {
 	@Override
 	public Player findPlayerByName(String playerName) {
 		return playerRepository.findByFullName(playerName).orElse(null);
+	}
+
+	@Override
+	public List<Player> findRandomPlayersWithFilters(String filter) {
+		MatchOperation matchOperation = Aggregation.match(Criteria.where(filter).ne(0));
+		SampleOperation sampleOperation = Aggregation.sample(3);
+		Aggregation aggregation = Aggregation.newAggregation(matchOperation, sampleOperation);
+
+		String collectionName = mongoTemplate.getCollectionName(Player.class);
+
+		AggregationResults<Player> results = mongoTemplate.aggregate(aggregation, collectionName, Player.class);
+
+		return results.getMappedResults();
 	}
 }

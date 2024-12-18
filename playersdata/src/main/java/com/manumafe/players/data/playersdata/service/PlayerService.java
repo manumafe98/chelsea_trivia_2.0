@@ -1,37 +1,36 @@
 package com.manumafe.players.data.playersdata.service;
 
 import java.util.List;
-import java.util.Set;
 
 import com.manumafe.players.data.playersdata.document.Player;
 
 public interface PlayerService {
-
+// TODO add services to get 3 random players for age without age 0 and for shirts without shirt unknown
     void savePlayer(
-            String playerName,
-            Set<String> playerShirtNumbers,
-            String playerImgUrl,
-            Set<String> playerPositions,
-            Integer playerAge,
-            List<String> playerNationalities,
-            Integer appareances,
-            Integer goals,
-            Integer assists,
-            Integer yellowCards,
-            Integer redCards,
-            Integer minutesPlayed);
+        String playerName,
+        String playerShirtNumbers,
+        String playerImgUrl,
+        String playerPositions,
+        Integer playerAge,
+        List<String> playerNationalities,
+        Integer appareances,
+        Integer goals,
+        Integer assists,
+        Integer yellowCards,
+        Integer redCards,
+        Integer minutesPlayed);
 
     void updatePlayer(
-            Player playerToUpdate,
-            String playerShirtNumber,
-            String playerPosition,
-            Integer playerAge,
-            Integer appareances,
-            Integer goals,
-            Integer assists,
-            Integer yellowCards,
-            Integer redCards,
-            Integer minutesPlayed);
+        Player playerToUpdate,
+        String playerShirtNumber,
+        String playerPosition,
+        Integer playerAge,
+        Integer appareances,
+        Integer goals,
+        Integer assists,
+        Integer yellowCards,
+        Integer redCards,
+        Integer minutesPlayed);
 
     void deleteAllPlayers();
 

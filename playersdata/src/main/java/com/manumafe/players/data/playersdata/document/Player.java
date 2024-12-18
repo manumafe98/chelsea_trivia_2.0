@@ -15,14 +15,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Player {
-
+// TODO change data type of shirtNumbers to Integer, and update Unknown shirts for 0 value
     @Id
     private String id;
     private String fullName;
     private Set<String> shirtNumbers;
     private String profileImageUrl;
     private Set<String> positions;
-    private Integer age;
+    private Set<Integer> activeAgesAtClub;
     private List<String> nationalities;
     private Integer appareances;
     private Integer goals;

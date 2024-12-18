@@ -26,9 +26,9 @@ public class PlayerServiceImpl implements PlayerService {
 	@Override
 	public void savePlayer(
 			String playerName,
-			Set<String> playerShirtNumbers,
+			String playerShirtNumber,
 			String playerImgUrl,
-			Set<String> playerPositions,
+			String playerPosition,
 			Integer playerAge,
 			List<String> playerNationalities,
 			Integer appareances,
@@ -39,10 +39,21 @@ public class PlayerServiceImpl implements PlayerService {
 			Integer minutesPlayed) {
 		Player player = new Player();
 		player.setFullName(playerName);
+
+		Set<String> playerShirtNumbers = new HashSet<>();
+		playerShirtNumbers.add(playerShirtNumber);
 		player.setShirtNumbers(playerShirtNumbers);
+
 		player.setProfileImageUrl(playerImgUrl);
+
+		Set<String> playerPositions = new HashSet<>();
+		playerPositions.add(playerPosition);
 		player.setPositions(playerPositions);
-		player.setAge(playerAge);
+
+		Set<Integer> activeAgesAtClub = new HashSet<>();
+		activeAgesAtClub.add(playerAge);
+		player.setActiveAgesAtClub(activeAgesAtClub);
+
 		player.setNationalities(playerNationalities);
 		player.setAppareances(appareances);
 		player.setGoals(goals);
@@ -100,7 +111,9 @@ public class PlayerServiceImpl implements PlayerService {
 		playerPositions.add(playerPosition);
 		playerToUpdate.setPositions(playerPositions);
 
-		playerToUpdate.setAge(playerAge);
+		Set<Integer> activeAgesAtClub = new HashSet<>(playerToUpdate.getActiveAgesAtClub());
+		activeAgesAtClub.add(playerAge);
+		playerToUpdate.setActiveAgesAtClub(activeAgesAtClub);
 
 		playerToUpdate.setAppareances(playerToUpdate.getAppareances() + appareances);
 		playerToUpdate.setGoals(playerToUpdate.getGoals() + goals);

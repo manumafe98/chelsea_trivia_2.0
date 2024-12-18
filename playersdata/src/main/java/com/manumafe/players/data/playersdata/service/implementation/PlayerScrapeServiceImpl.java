@@ -3,10 +3,8 @@ package com.manumafe.players.data.playersdata.service.implementation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -30,9 +28,9 @@ public class PlayerScrapeServiceImpl implements PlayerScrapeService {
     private final PlayerService playerService;
     private static final String SHIRT_NUMBER = "shirtNumber";
     private static final String NATIONALITY = "nationality";
-    private static final String PLAYER_NAME = "playerName";
-    private static final String PLAYER_POSITION = "playerPosition";
-    private static final String PLAYER_PORTRAIT = "playerPortrait";
+    private static final String NAME = "name";
+    private static final String POSITION = "position";
+    private static final String PORTRAIT = "portrait";
     private static final String AGE = "age";
     private static final String APPEARANCES = "appearances";
     private static final String GOALS = "goals";
@@ -85,8 +83,8 @@ public class PlayerScrapeServiceImpl implements PlayerScrapeService {
         } else if (text.contains("Nat.")) {
             columnMap.put(NATIONALITY, "td:nth-child(" + currentIndex + ") img");
         } else if (text.contains("Player")) {
-            columnMap.put(PLAYER_NAME, "td:nth-child(" + currentIndex + ") table tbody tr td span.hide-for-small > a");
-            columnMap.put(PLAYER_POSITION, "td:nth-child(" + currentIndex + ") table tbody tr:nth-child(2) > td");
+            columnMap.put(NAME, "td:nth-child(" + currentIndex + ") table tbody tr td span.hide-for-small > a");
+            columnMap.put(POSITION, "td:nth-child(" + currentIndex + ") table tbody tr:nth-child(2) > td");
         } else if (text.contains("Age")) {
             columnMap.put(AGE, "td:nth-child(" + currentIndex  + ")");
         }
@@ -100,7 +98,7 @@ public class PlayerScrapeServiceImpl implements PlayerScrapeService {
             case "Minutes played" -> columnMap.put(MINUTES_PLAYED, "td:nth-child(" + currentIndex + ")");
         }
 
-        columnMap.put(PLAYER_PORTRAIT, "table.inline-table img.bilderrahmen-fixed");
+        columnMap.put(PORTRAIT, "table.inline-table img.bilderrahmen-fixed");
     }
 
     private void scrapePlayers(String url) throws IOException {
@@ -110,25 +108,21 @@ public class PlayerScrapeServiceImpl implements PlayerScrapeService {
         Elements tableRows = doc.select("table tbody > tr");
 
         for (Element row : tableRows) {
-            String playerName = row.select(tableHeaderSelectors.get(PLAYER_NAME)).text();
+            String playerName = row.select(tableHeaderSelectors.get(NAME)).text();
 
             if (row.text().contains("Not used during this season") || row.text().contains("Not in squad during this season") || playerName.isBlank()) {
                 continue;
             }
 
-            Set<String> playerShirtNumbers = new HashSet<>();
             String playerShirtString = row.select(tableHeaderSelectors.get(SHIRT_NUMBER)).text();
             String playerShirtData = playerShirtString.equals("-") ? "Unknown" : playerShirtString;
-            playerShirtNumbers.add(playerShirtData);
 
-            Set<String> playerPositions = new HashSet<>();
-            String playerPositionData = row.selectFirst(tableHeaderSelectors.get(PLAYER_POSITION)).text();
-            playerPositions.add(playerPositionData);
+            String playerPositionData = row.selectFirst(tableHeaderSelectors.get(POSITION)).text();
 
             String playerAgeData = row.select(tableHeaderSelectors.get(AGE)).text();
             int playerAge = convertStatToInteger(playerAgeData);
 
-            Element portraitImgElement = row.selectFirst(tableHeaderSelectors.get(PLAYER_PORTRAIT));
+            Element portraitImgElement = row.selectFirst(tableHeaderSelectors.get(PORTRAIT));
             String playerImgUrl = portraitImgElement != null ? portraitImgElement.attr("src") : "No image available";
 
             Elements nationalities = row.select(tableHeaderSelectors.get(NATIONALITY));
@@ -161,7 +155,7 @@ public class PlayerScrapeServiceImpl implements PlayerScrapeService {
             if (player != null) {
                 playerService.updatePlayer(player, playerShirtData, playerPositionData, playerAge, appareances, goals, assists, yellowCards, redCards, minutesPlayed);
             } else {
-                playerService.savePlayer(playerName, playerShirtNumbers, playerImgUrl, playerPositions, playerAge, playerNationalities, appareances, goals, assists, yellowCards, redCards, minutesPlayed);
+                playerService.savePlayer(playerName, playerShirtData, playerImgUrl, playerPositionData, playerAge, playerNationalities, appareances, goals, assists, yellowCards, redCards, minutesPlayed);
             }
         }
     }

@@ -1,5 +1,5 @@
-import { PageHeader } from "@/components/PageHeader"
-import { TriviaContainer } from "@/components/TriviaContainer"
+import { PageHeader } from "../components/PageHeader"
+import { TriviaContainer } from "../components/TriviaContainer"
 
 export const TriviaGamePage = () => {
   return (

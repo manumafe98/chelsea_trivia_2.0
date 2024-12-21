@@ -4,10 +4,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -106,12 +106,12 @@ public class PlayerServiceImpl implements PlayerService {
 
 	@Override
 	public List<Player> findPlayerWithMostOfCertainAttribute(String attribute) {
-		// TODO what if two players have exaclty the same of that attribute, define by some other criteria
 		Query query = new Query().with(Sort.by(Sort.Order.desc(attribute)));
-		Player topScorerPlayer = mongoTemplate.findOne(query, Player.class);
-		List<Player> randomPlayers = playerRepository.findRandomPlayersExcludingId(topScorerPlayer.getId(), 2);
+		Player playerWithMaxAttribute = mongoTemplate.findOne(query, Player.class);
+		List<Player> randomPlayers = playerRepository.findRandomPlayersExcludingId(playerWithMaxAttribute.getId(), 2);
 		List<Player> players = new ArrayList<>(randomPlayers);
-		players.add(topScorerPlayer);
+		players.add(playerWithMaxAttribute);
+		Collections.shuffle(players);
 
 		return players;
 	}
@@ -184,7 +184,7 @@ public class PlayerServiceImpl implements PlayerService {
 			exclusionCriteria = new ArrayList<>(
 				excludedPlayers.stream()
 					.map(player -> Criteria.where(attribute).ne(getAttributeValueUsingGetter(player, attribute)))
-					.collect(Collectors.toList())
+					.toList()
 			);
 		} else {
 			exclusionCriteria = new ArrayList<>();

@@ -15,8 +15,8 @@ public interface PlayerRepository extends MongoRepository<Player, String> {
     })
     List<Player> findRandomPlayersExcludingId(String excludedId, int sampleSize);
 
-    @Aggregation(pipeline = { "{ $sample: { size: ?0 } }" })
-    List<Player> findRandomPlayers(int sampleSize);
+    @Aggregation(pipeline = { "{ $sample: { size: 1 } }" })
+    Player findRandomPlayer();
 
     @Aggregation(pipeline = { "{ $match: { fullName: ?0 } }" })
     Optional<Player> findByFullName(String fullName);

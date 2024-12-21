@@ -39,6 +39,27 @@ public class PlayerScrapeServiceImpl implements PlayerScrapeService {
     private static final String RED_CARDS = "redCards";
     private static final String MINUTES_PLAYED = "minutesPlayed";
 
+// TODO Investigate why Terry has only 684 appareances
+// 98/99 -> 7
+// 99/00 -> 9
+// 00/01 -> 26
+// 01/02 -> 47
+// 02/03 -> 29
+// 03/04 -> 51
+// 04/05 -> 53
+// 05/06 -> 50
+// 06/07 -> 45
+// 07/08 -> 37
+// 08/09 -> 51
+// 09/10 -> 52
+// 10/11 -> 46
+// 11/12 -> 44
+// 12/13 -> 27
+// 13/14 -> 47
+// 14/15 -> 49
+// 15/16 -> 33
+// 16/17 -> 14
+
     @Override
     public Document connect(String url) throws IOException {
         return Jsoup.connect(url).timeout(0).get();

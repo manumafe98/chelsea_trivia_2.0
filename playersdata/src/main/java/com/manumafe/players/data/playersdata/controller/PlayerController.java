@@ -29,20 +29,14 @@ public class PlayerController {
     }
 
     @GetMapping("/most")
-    public ResponseEntity<List<Player>> getPlayerWithMostOfThatAttributeAndTwoRandom(@RequestParam("attribute") String attribute) {
+    public ResponseEntity<List<Player>> getPlayerWithMostOfThatAttributeAndTwoRandom(@RequestParam String attribute) {
         List<Player> players = playerService.findPlayerWithMostOfCertainAttribute(attribute);
         return ResponseEntity.status(HttpStatus.OK).body(players);
     }
 
     @GetMapping("/random")
-    public ResponseEntity<List<Player>> getRandomPlayers() {
-        List<Player> players = playerService.findRandomPlayers();
-        return ResponseEntity.status(HttpStatus.OK).body(players);
-    }
-
-    @GetMapping("/filter")
-    public ResponseEntity<List<Player>> getRandomPlayersWithFilter(@RequestParam("attribute") String attribute) {
-        List<Player> players = playerService.findRandomPlayersWithFilters(attribute);
+    public ResponseEntity<List<Player>> getRandomPlayers(@RequestParam String attribute) {
+        List<Player> players = playerService.findRandomPlayers(attribute);
         return ResponseEntity.status(HttpStatus.OK).body(players);
     }
 }

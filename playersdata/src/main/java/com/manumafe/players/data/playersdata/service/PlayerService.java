@@ -37,9 +37,7 @@ public interface PlayerService {
 
     List<Player> findAllPlayers();
 
-    List<Player> findRandomPlayers();
-
-    List<Player> findRandomPlayersWithFilters(String filter);
+    List<Player> findRandomPlayers(String attribute);
 
     List<Player> findPlayerWithMostOfCertainAttribute(String attribute);
 }

@@ -1,4 +1,4 @@
-import { Answer } from "./answert"
+import { Answer } from "./answer"
 import { Options } from "./options"
 export interface Question {
     question: string,

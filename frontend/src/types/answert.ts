@@ -1,1 +1,0 @@
-export type Answer = string | number | number[] | string[]

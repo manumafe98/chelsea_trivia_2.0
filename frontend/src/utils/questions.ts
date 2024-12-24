@@ -1,3 +1,5 @@
+export type PlayerRelatedQuestioneKeys = keyof typeof PlayerRelatedQuestions;
+
 export const PlayerRelatedQuestions = {
     shirtNumbers: (playerName: string) => `Which are the shirt numbers that ${playerName} used?`,
     profileImageUrl: (playerName: string) => `Who of the following players is ${playerName}?`,
@@ -11,6 +13,8 @@ export const PlayerRelatedQuestions = {
     redCardsReceived: (playerName: string) => `How many red cards does ${playerName} has?`,
     minutesPlayed: (playerName: string) => `How many minutes played does ${playerName} has?`
 };
+
+export type AttributeRelatedQuestioneKeys = keyof typeof AttributeRelatedQuestions;
 
 export const AttributeRelatedQuestions = {
     shirtNumbers: (shirtNumbers: number[]) => `Who among these players used the following ${shirtNumbers}?`,
@@ -26,6 +30,8 @@ export const AttributeRelatedQuestions = {
     minutesPlayed: (minutesPlayed: number) => `Who among these players has ${minutesPlayed} minutes played?`
 };
 
+export type ComparisonRelatedQuestioneKeys = keyof typeof ComparisonRelatedQuestions;
+
 export const ComparisonRelatedQuestions = {
     appareances: () => "Who among these players has the most appareances?",
     goals: () => "Who among these players has the most goals?",
@@ -34,6 +40,8 @@ export const ComparisonRelatedQuestions = {
     redCardsReceived: () => "Who among these players has the most red cards received?",
     minutesPlayed: () => "Who among these players has the most minutes played?"
 }
+
+export type MostRelatedQuestioneKeys = keyof typeof MostRelatedQuestions;
 
 export const MostRelatedQuestions = {
     appareances: () => "Who among these players has the most appareances in chelsea history?",

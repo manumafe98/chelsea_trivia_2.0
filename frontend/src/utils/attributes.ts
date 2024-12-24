@@ -1,5 +1,4 @@
 export enum AllAttributes {
-    FULL_NAME = "fullName",
     SHIRT_NUMBERS = "shirtNumbers",
     PROFILE_IMAGE_URL = "profileImageUrl",
     POSITIONS = "positions",

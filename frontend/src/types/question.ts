@@ -4,4 +4,6 @@ export interface Question {
     question: string,
     options: Options,
     answer: Answer
+    attribute: string,
+    type: string
 }

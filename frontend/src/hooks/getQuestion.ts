@@ -32,31 +32,35 @@ const getMostRelatedQuestion = async (): Promise<Question> => {
     const attributes: Options = players.map(player => player.fullName);
     const answer: Answer = players.reduce((max, player) => (player[randomAttribute] > max[randomAttribute] ? player : max), players[0]).fullName;
 
-    return {question, options: attributes, answer};
+    return {question, options: attributes, answer, attribute: randomAttribute, type: "MostRelatedQuestions"};
 }
 
 const randomizeQuestionType = (player: Player, players: Player[], attribute: AllAttributes): Question => {
     const randomNumber = Math.floor(Math.random() * 3) + 1;
     let question = "";
     let answer: Answer = "";
+    let type = "";
     let options: Options = [];
 
     switch (randomNumber) {
         case 1:
             question = PlayerRelatedQuestions[attribute as PlayerRelatedQuestioneKeys](player.fullName);
-            options = players.map(player => player[attribute]) as Options;
+            options = players.map(player => Array.isArray(player[attribute]) ? player[attribute].join(", ") : player[attribute]) as Options;
             answer = player[attribute];
+            type = "PlayerRelatedQuestions";
             break;
         case 2:
-            question = (AttributeRelatedQuestions[attribute as AttributeRelatedQuestioneKeys] as (value: string | number | string[] | number[]) => string)(player[attribute]);
+            question = (AttributeRelatedQuestions[attribute as AttributeRelatedQuestioneKeys] as (value: string | number | string[] | number[]) => string)(Array.isArray(player[attribute]) ? player[attribute].join(", ") : player[attribute]);
             answer = player.fullName;
             options = players.map(player => player.fullName);
+            type = "AttributeRelatedQuestions";
             break;
         case 3:
             const numericAttribute = getRandomEnumValue(NumericAttributes);
             question = ComparisonRelatedQuestions[numericAttribute as ComparisonRelatedQuestioneKeys]();
             options = players.map(player => player.fullName);
             answer = players.reduce((max, player) => (player[numericAttribute] > max[numericAttribute] ? player : max), players[0]).fullName;
+            type = "ComparisonRelatedQuestions"
     }
-    return {question, options, answer};
+    return {question, options, answer, attribute, type};
 }

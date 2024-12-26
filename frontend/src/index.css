@@ -41,3 +41,7 @@ img, video, svg { height: auto; max-width: 100%; }
 .trivia-option-button {
     @apply bg-secondary-blue w-2/3 h-14 border-2 border-solid border-primary-gold my-2 text-secondary-gold italic rounded-xl transition-transform duration-300 hover:scale-105 hover:bg-primary-blue;
 }
+
+.trivia-player-image {
+    @apply rounded-md border-solid border-2 border-primary-gold w-12 h-12;
+}

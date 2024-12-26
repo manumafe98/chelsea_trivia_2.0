@@ -17,10 +17,10 @@ export const PlayerRelatedQuestions = {
 export type AttributeRelatedQuestioneKeys = keyof typeof AttributeRelatedQuestions;
 
 export const AttributeRelatedQuestions = {
-    shirtNumbers: (shirtNumbers: number[]) => `Who among these players used the following ${shirtNumbers}?`,
+    shirtNumbers: (shirtNumbers: number[]) => `Who among these players used the following ${shirtNumbers} shirt numbers?`,
     profileImageUrl: (profileImageUrl: string) => `Who is this player?${profileImageUrl}`,
     positions: (positions: number[]) => `Who among these players played as ${positions}?`,
-    activeAgesAtClub: (activeAgesAtClub: number[]) => `Who among these players was active for chelsea with the following years ${activeAgesAtClub}?`,
+    activeAgesAtClub: (activeAgesAtClub: number[]) => `Who among these players was active for chelsea in the following years ${activeAgesAtClub}?`,
     nationalities: (nationalities: string[]) => `Who among these players has the following nationalities ${nationalities}?`,
     appareances: (appareances: number) => `Who among these players has ${appareances} appareances?`,
     goals: (goals: number) => `Who among these players has ${goals} goals?`,

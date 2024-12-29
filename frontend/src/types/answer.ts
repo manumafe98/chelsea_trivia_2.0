@@ -1,1 +1,1 @@
-export type Answer = string | number | number[] | string[]
+export type Answer = string | number | number[] | string[];

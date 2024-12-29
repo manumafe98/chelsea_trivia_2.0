@@ -12,4 +12,4 @@ export interface Player {
     yellowCardsReceived: number;
     redCardsReceived: number;
     minutesPlayed: number;
-}
+};

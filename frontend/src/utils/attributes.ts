@@ -10,7 +10,7 @@ export enum AllAttributes {
     YELLOW_CARDS_RECEIVED = "yellowCardsReceived",
     RED_CARDS_RECEIVED = "redCardsReceived",
     MINUTES_PLAYED = "minutesPlayed"
-}
+};
 
 export enum NumericAttributes {
     APPAREANCES = "appareances",
@@ -19,4 +19,4 @@ export enum NumericAttributes {
     YELLOW_CARDS_RECEIVED = "yellowCardsReceived",
     RED_CARDS_RECEIVED = "redCardsReceived",
     MINUTES_PLAYED = "minutesPlayed"
-}
+};

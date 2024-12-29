@@ -14,16 +14,16 @@ export const getQuestion = async (): Promise<Question> => {
 
     if (randomEndpoint === "/most") {
         return await getMostRelatedQuestion();
-    }
+    };
     return await getRandomRelatedQuestion();
-}
+};
 
 const getRandomRelatedQuestion = async (): Promise<Question> => {
     const randomAttribute = getRandomEnumValue(AllAttributes);
     const players: Player[] = await useAxios(`/backend/api/v1/player/random?attribute=${randomAttribute}`);
     const randomPlayer = players[Math.floor(Math.random() * players.length)];
     return randomizeQuestionType(randomPlayer, players, randomAttribute);
-}
+};
 
 const getMostRelatedQuestion = async (): Promise<Question> => {
     const randomAttribute = getRandomEnumValue(NumericAttributes);
@@ -33,7 +33,7 @@ const getMostRelatedQuestion = async (): Promise<Question> => {
     const answer: Answer = players.reduce((max, player) => (player[randomAttribute] > max[randomAttribute] ? player : max), players[0]).fullName;
 
     return {question, options: attributes, answer, attribute: randomAttribute, type: "MostRelatedQuestions"};
-}
+};
 
 const randomizeQuestionType = (player: Player, players: Player[], attribute: AllAttributes): Question => {
     const randomNumber = Math.floor(Math.random() * 3) + 1;
@@ -60,7 +60,8 @@ const randomizeQuestionType = (player: Player, players: Player[], attribute: All
             question = ComparisonRelatedQuestions[numericAttribute as ComparisonRelatedQuestioneKeys]();
             options = players.map(player => player.fullName);
             answer = players.reduce((max, player) => (player[numericAttribute] > max[numericAttribute] ? player : max), players[0]).fullName;
-            type = "ComparisonRelatedQuestions"
-    }
+            type = "ComparisonRelatedQuestions";
+            break;
+    };
     return {question, options, answer, attribute, type};
-}
+};

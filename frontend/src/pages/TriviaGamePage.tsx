@@ -3,9 +3,9 @@ import { TriviaContainer } from "../components/TriviaContainer";
 
 export const TriviaGamePage = () => {
   return (
-    <div className="h-screen bg-secondary-blue">
+    <div className="page-container">
       <PageHeader/>
       <TriviaContainer/>
     </div>
-  )
-}
+  );
+};

@@ -39,7 +39,7 @@ export const ComparisonRelatedQuestions = {
     yellowCardsReceived: () => "Who among these players has the most yellow cards received?",
     redCardsReceived: () => "Who among these players has the most red cards received?",
     minutesPlayed: () => "Who among these players has the most minutes played?"
-}
+};
 
 export type MostRelatedQuestioneKeys = keyof typeof MostRelatedQuestions;
 

@@ -12,7 +12,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: admin
     networks:
       - app_network
-  
+
   springapi:
     depends_on:
       - mongodb
@@ -28,20 +28,20 @@ services:
       - "8080:8080"
     networks:
       - app_network
-    
-    frontend:
-      depends_on:
-        - springapi
-      build:
-        context: ./frontend
-        dockerfile: Dockerfile
-      container_name: frontend
-      environment:
-        API_KEY: af83b1d9-42f6-437a-8c5a-91e7cf408672
-      ports:
-        - "5173:5173"
-      networks:
-        - app_network
+
+  reactfrontend:
+    depends_on:
+      - springapi
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    environment:
+      API_KEY: af83b1d9-42f6-437a-8c5a-91e7cf408672
+    ports:
+      - "5173:5173"
+    networks:
+      - app_network
 
 networks:
   app_network:

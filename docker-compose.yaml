@@ -8,8 +8,8 @@ services:
       - 27017:27017
     environment:
       MONGO_INITDB_DATABASE: playersData
-      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
     networks:
       - app_network
   
@@ -21,9 +21,9 @@ services:
       dockerfile: Dockerfile
     container_name: spring
     environment:
-      MONGODB_USER: ${MONGODB_USER}
-      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
-      API_KEY: ${API_KEY}
+      MONGODB_USER: admin
+      MONGODB_PASSWORD: admin
+      API_KEY: af83b1d9-42f6-437a-8c5a-91e7cf408672
     ports:
       - "8080:8080"
     networks:
@@ -37,7 +37,7 @@ services:
         dockerfile: Dockerfile
       container_name: frontend
       environment:
-        API_KEY: ${API_KEY}
+        API_KEY: af83b1d9-42f6-437a-8c5a-91e7cf408672
       ports:
         - "5173:5173"
       networks:

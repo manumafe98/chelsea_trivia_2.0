@@ -14,10 +14,13 @@ export default defineConfig({
       ],
     },
   },
+  define: {
+    "import.meta.env.API_KEY": JSON.stringify(process.env.API_KEY),
+  },
   server: {
     proxy: {
       "/backend": {
-        target: "http://springapi:8081",
+        target: "http://springapi:8080",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/backend/, "")
       }

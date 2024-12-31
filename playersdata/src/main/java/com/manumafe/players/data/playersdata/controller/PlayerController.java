@@ -14,7 +14,6 @@ import com.manumafe.players.data.playersdata.service.PlayerService;
 
 import lombok.RequiredArgsConstructor;
 
-
 @RestController
 @RequestMapping("/api/v1/player")
 @RequiredArgsConstructor

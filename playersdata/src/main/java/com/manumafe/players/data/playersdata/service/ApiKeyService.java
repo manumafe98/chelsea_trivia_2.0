@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Service
 public class ApiKeyService {
 
-    @Value("${endpoint.api.key}")
+    @Value("${API_KEY}")
     private String expectedApiKey;
 
     public Optional<String> extract(HttpServletRequest request) {

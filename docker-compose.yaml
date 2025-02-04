@@ -24,6 +24,7 @@ services:
       MONGODB_USER: ${MONGODB_USER}
       MONGODB_PASSWORD: ${MONGODB_PASSWORD}
       API_KEY: ${API_KEY}
+      ALLOWED_ORIGINS_HEADERS: ${ALLOWED_ORIGINS_HEADERS}
     ports:
       - "8080:8080"
     networks:

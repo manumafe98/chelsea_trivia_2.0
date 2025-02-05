@@ -16,16 +16,6 @@ export default defineConfig({
   },
   define: {
     "import.meta.env.API_KEY": JSON.stringify(process.env.API_KEY),
-  },
-  server: {
-    host: "0.0.0.0",
-    port: 5173,
-    proxy: {
-      "/backend": {
-        target: "http://springapi:8080",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/backend/, "")
-      }
-    }
+    "import.meta.env.BACKEND_URL": JSON.stringify(process.env.BACKEND_URL)
   }
 })

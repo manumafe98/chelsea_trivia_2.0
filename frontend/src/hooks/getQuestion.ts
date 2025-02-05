@@ -20,7 +20,7 @@ export const getQuestion = async (): Promise<Question> => {
 
 const getRandomRelatedQuestion = async (): Promise<Question> => {
     const randomAttribute = getRandomEnumValue(AllAttributes);
-    const players: Player[] = await useAxios(`/backend/api/v1/player/random?attribute=${randomAttribute}`);
+    const players: Player[] = await useAxios(`${import.meta.env.BACKEND_URL}/api/v1/player/random?attribute=${randomAttribute}`);
     const randomPlayer = players[Math.floor(Math.random() * players.length)];
     return randomizeQuestionType(randomPlayer, players, randomAttribute);
 };
@@ -28,7 +28,7 @@ const getRandomRelatedQuestion = async (): Promise<Question> => {
 const getMostRelatedQuestion = async (): Promise<Question> => {
     const randomAttribute = getRandomEnumValue(NumericAttributes);
     const question = MostRelatedQuestions[randomAttribute as MostRelatedQuestioneKeys]();
-    const players: Player[] = await useAxios(`/backend/api/v1/player/most?attribute=${randomAttribute}`);
+    const players: Player[] = await useAxios(`${import.meta.env.BACKEND_URL}/api/v1/player/most?attribute=${randomAttribute}`);
     const attributes: Options = players.map(player => player.fullName);
     const answer: Answer = players.reduce((max, player) => (player[randomAttribute] > max[randomAttribute] ? player : max), players[0]).fullName;
 
